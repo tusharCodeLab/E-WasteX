@@ -51,7 +51,22 @@ export async function GET(req: Request) {
     }
 
     const listings = await Listing.find(query).populate('seller', 'name email').sort({ createdAt: -1 });
-    return NextResponse.json(listings);
+
+    const session = await getAuthUser(req);
+    const sanitizedListings = listings.map(l => {
+      const listing = l.toObject();
+      if (session?.role !== 'admin' && session?.userId !== listing.seller._id.toString()) {
+        // Remove exact address and slightly fuzz coordinates if necessary, 
+        // or just rely on the frontend showing a large circle.
+        // For strict privacy, we could return city-level coordinates.
+        if (listing.preciseLocation) {
+          delete listing.preciseLocation.address;
+        }
+      }
+      return listing;
+    });
+
+    return NextResponse.json(sanitizedListings);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

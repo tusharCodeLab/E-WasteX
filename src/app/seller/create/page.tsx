@@ -13,11 +13,12 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 import { SparklesCore } from "@/components/ui/sparkles";
+import LocationPicker from '@/components/LocationPicker';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -51,13 +52,14 @@ export default function CreateListing() {
   const { user, loading: authLoading } = useAuth('seller');
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: '',
-    condition: '',
-    location: '',
-  });
+    const [formData, setFormData] = useState({
+      title: '',
+      description: '',
+      category: '',
+      condition: '',
+      location: '',
+      preciseLocation: null as any,
+    });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -166,15 +168,39 @@ export default function CreateListing() {
               </motion.div>
             </div>
 
-            <motion.div variants={itemVariants} className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Origin Location</label>
-              <Input 
-                required
-                placeholder="e.g. HQ Logistics Hub, Chicago"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                className="h-16 rounded-2xl bg-zinc-50/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800 focus:ring-emerald-500 transition-all text-lg"
-              />
+            <motion.div variants={itemVariants} className="space-y-6">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Precise Collection Origin</label>
+              <div className="p-8 rounded-[2.5rem] bg-zinc-50/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800">
+                <LocationPicker 
+                  onLocationSelect={(loc) => {
+                    setFormData({
+                      ...formData,
+                      location: `${loc.area}, ${loc.city}`,
+                      preciseLocation: loc
+                    });
+                  }}
+                />
+                <AnimatePresence>
+                  {formData.preciseLocation && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-800"
+                    >
+                      <div className="flex items-start gap-4 p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10">
+                        <div className="p-2 rounded-xl bg-emerald-500/10">
+                          <MapPin className="w-5 h-5 text-emerald-500" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-1">Target Address Locked</p>
+                          <p className="text-sm font-medium leading-relaxed">{formData.preciseLocation.address}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-3">

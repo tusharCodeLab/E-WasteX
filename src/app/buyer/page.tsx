@@ -17,7 +17,8 @@ import {
   LayoutGrid,
   Heart,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Map as MapIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -30,6 +31,7 @@ import {
 import { Spotlight } from "@/components/ui/spotlight";
 import { SparklesCore } from "@/components/ui/sparkles";
 import Chat from '@/components/Chat';
+import CityPreview from '@/components/CityPreview';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -63,8 +65,9 @@ export default function BuyerMarketplace() {
   const [hazard, setHazard] = useState('all');
   const [interests, setInterests] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'marketplace' | 'interests'>('marketplace');
-  const [selectedChat, setSelectedChat] = useState<any>(null);
-  const [submitting, setSubmitting] = useState<string | null>(null);
+    const [selectedChat, setSelectedChat] = useState<any>(null);
+    const [submitting, setSubmitting] = useState<string | null>(null);
+    const [showMapFor, setShowMapFor] = useState<string | null>(null);
 
   useEffect(() => {
     fetchListings();
@@ -269,14 +272,51 @@ export default function BuyerMarketplace() {
                             {item.description}
                           </p>
                           
-                          <div className="grid grid-cols-1 gap-4 mt-auto">
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/30 border border-zinc-100 dark:border-zinc-800 group-hover:bg-emerald-500/5 transition-colors">
-                              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0">
-                                <MapPin className="w-5 h-5" />
+                            <div className="grid grid-cols-1 gap-4 mt-auto">
+                              <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/30 border border-zinc-100 dark:border-zinc-800 group-hover:bg-emerald-500/5 transition-colors">
+                                <div className="flex items-center gap-4 truncate">
+                                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0">
+                                    <MapPin className="w-5 h-5" />
+                                  </div>
+                                  <span className="text-sm font-black tracking-tight truncate">{item.location}</span>
+                                </div>
+                                {item.preciseLocation && (
+                                  <Button 
+                                    size="sm" 
+                                    variant="ghost" 
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setShowMapFor(showMapFor === item._id ? null : item._id);
+                                    }}
+                                    className="text-xs font-bold text-emerald-600 hover:bg-emerald-500/10"
+                                  >
+                                    <MapIcon className="w-3.5 h-3.5 mr-1.5" />
+                                    {showMapFor === item._id ? 'Hide Area' : 'View Area'}
+                                  </Button>
+                                )}
                               </div>
-                              <span className="text-sm font-black tracking-tight truncate">{item.location}</span>
-                            </div>
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/30 border border-zinc-100 dark:border-zinc-800 group-hover:bg-orange-500/5 transition-colors">
+
+                              <AnimatePresence>
+                                {showMapFor === item._id && item.preciseLocation && (
+                                  <motion.div 
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="overflow-hidden"
+                                  >
+                                    <div className="pt-2 pb-4">
+                                      <CityPreview 
+                                        lat={item.preciseLocation.lat} 
+                                        lng={item.preciseLocation.lng} 
+                                        city={item.preciseLocation.city} 
+                                        area={item.preciseLocation.area} 
+                                      />
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+
+                              <div className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/30 border border-zinc-100 dark:border-zinc-800 group-hover:bg-orange-500/5 transition-colors">
                               <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
                                 <AlertTriangle className="w-5 h-5" />
                               </div>

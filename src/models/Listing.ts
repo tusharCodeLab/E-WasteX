@@ -14,6 +14,13 @@ const ListingSchema = new mongoose.Schema({
   seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   images: [{ type: String }],
   location: { type: String, required: true },
+  preciseLocation: {
+    lat: { type: Number },
+    lng: { type: Number },
+    address: { type: String },
+    city: { type: String },
+    area: { type: String }
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

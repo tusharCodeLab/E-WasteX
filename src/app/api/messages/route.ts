@@ -36,15 +36,16 @@ export async function POST(req: Request) {
   const session = await getAuthUser(req);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
-  const { receiverId, listingId, content } = body;
+    const body = await req.json();
+    const { receiverId, listingId, content, location } = body;
 
-  const message = await Message.create({
-    sender: session.userId,
-    receiver: receiverId,
-    listing: listingId,
-    content,
-  });
+    const message = await Message.create({
+      sender: session.userId,
+      receiver: receiverId,
+      listing: listingId,
+      content,
+      location,
+    });
 
   const populatedMessage = await Message.findById(message._id)
     .populate('sender', 'name email role')
