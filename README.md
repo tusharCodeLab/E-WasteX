@@ -2,6 +2,17 @@
 
 A comprehensive electronic waste management platform built with Next.js 15, featuring user authentication, marketplace functionality, and environmental impact tracking.
 
+---
+## 🌐 Live Deployment
+
+The application is successfully deployed and accessible at:
+
+🔗 **https://e-waste-exchange-mern-platform.vercel.app/**
+
+Deployment is handled using **Vercel**, ensuring fast global delivery, automatic builds, and continuous deployment on every push.
+
+---
+
 ## 👥 Project Authors
 
 This project is designed, developed, and maintained by:
@@ -326,4 +337,5 @@ For support and questions:
 ---
 
 **Built with ❤️ for sustainable e-waste management**
+
 
