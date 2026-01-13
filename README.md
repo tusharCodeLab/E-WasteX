@@ -2,6 +2,20 @@
 
 A comprehensive electronic waste management platform built with Next.js 15, featuring user authentication, marketplace functionality, and environmental impact tracking.
 
+## 👥 Project Authors
+
+This project is designed, developed, and maintained by:
+
+- **Tushar Patoliya**  
+  Computer Engineering Undergraduate | Full-Stack Developer  
+  Focused on scalable web systems, modern UI/UX, and sustainable technology solutions.
+
+- **Harsh Jasani**  
+  Computer Engineering Undergraduate | Software Developer  
+  Specializing in backend systems, databases, and application architecture.
+
+---
+
 ## 🌟 Features
 
 ### Core Functionality
@@ -312,3 +326,4 @@ For support and questions:
 ---
 
 **Built with ❤️ for sustainable e-waste management**
+
